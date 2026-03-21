@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Register - Lzen</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: Arial, sans-serif;
+            background: #1a1a2e;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: white;
+        }
+        .card {
+            background: #16213e;
+            padding: 40px;
+            border-radius: 16px;
+            width: 420px;
+        }
+        h2 { color: #e94560; margin-bottom: 24px;
+             text-align: center; }
+        input, select {
+            width: 100%; padding: 12px;
+            margin: 8px 0 16px;
+            border-radius: 8px;
+            border: 1px solid #444;
+            background: #0f3460;
+            color: white; font-size: 14px;
+        }
+        label { font-size: 13px; color: #a8a8b3; }
+        .btn {
+            width: 100%; padding: 14px;
+            background: #e94560; color: white;
+            border: none; border-radius: 8px;
+            font-size: 16px; cursor: pointer;
+        }
+        .error { color: #e94560; margin-bottom: 12px;
+                 text-align: center; }
+        .link { text-align: center; margin-top: 16px;
+                color: #a8a8b3; }
+        .link a { color: #e94560; }
+        #parentField { display: none; }
+    </style>
+</head>
+<body>
+<div class="card">
+    <h2>Create Account 🧠</h2>
+    <p class="error" th:if="${error}" th:text="${error}"></p>
+    <form th:action="@{/register}" method="post">
+        <label>Full Name</label>
+        <input type="text" name="name" placeholder="Your name" required/>
+        <label>Email</label>
+        <input type="email" name="email" placeholder="you@email.com" required/>
+        <label>Password</label>
+        <input type="password" name="password" placeholder="••••••••" required/>
+        <label>I am a</label>
+        <select name="role" id="roleSelect" onchange="toggleParent()">
+            <option value="STUDENT">Student</option>
+            <option value="PARENT">Parent</option>
+        </select>
+        <div id="parentField">
+            <label>Your Child's Email</label>
+            <input type="email" name="parentEmail"
+                   placeholder="child@email.com"/>
+        </div>
+        <button type="submit" class="btn">Register</button>
+    </form>
+    <div class="link">
+        Already have an account? <a href="/login">Login</a>
+    </div>
+</div>
+<script>
+function toggleParent() {
+    const role = document.getElementById('roleSelect').value;
+    document.getElementById('parentField').style.display =
+        role === 'PARENT' ? 'block' : 'none';
+}
+</script>
+</body>
+</html>

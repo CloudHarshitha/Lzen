@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Login - Lzen</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: Arial, sans-serif;
+            background: #1a1a2e;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: white;
+        }
+        .card {
+            background: #16213e;
+            padding: 40px;
+            border-radius: 16px;
+            width: 420px;
+        }
+        h2 { color: #e94560; margin-bottom: 24px;
+             text-align: center; }
+        input {
+            width: 100%; padding: 12px;
+            margin: 8px 0 16px;
+            border-radius: 8px;
+            border: 1px solid #444;
+            background: #0f3460;
+            color: white; font-size: 14px;
+        }
+        label { font-size: 13px; color: #a8a8b3; }
+        .btn {
+            width: 100%; padding: 14px;
+            background: #e94560; color: white;
+            border: none; border-radius: 8px;
+            font-size: 16px; cursor: pointer;
+        }
+        .error { color: #e94560; margin-bottom: 12px;
+                 text-align: center; }
+        .link { text-align: center; margin-top: 16px;
+                color: #a8a8b3; }
+        .link a { color: #e94560; }
+    </style>
+</head>
+<body>
+<div class="card">
+    <h2>Welcome Back 👋</h2>
+    <p class="error" th:if="${param.error}">
+        Invalid email or password!</p>
+    <form th:action="@{/login}" method="post">
+        <label>Email</label>
+        <input type="text" name="username"
+               placeholder="you@email.com" required/>
+        <label>Password</label>
+        <input type="password" name="password"
+               placeholder="••••••••" required/>
+        <button type="submit" class="btn">Login</button>
+    </form>
+    <div class="link">
+        No account? <a href="/register">Register</a>
+    </div>
+</div>
+</body>
+</html>
