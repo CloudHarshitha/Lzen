@@ -17,19 +17,11 @@ public class CustomUserDetailsService
     @Lazy
     private PasswordEncoder passwordEncoder;
 
-    @Override
     public UserDetails loadUserByUsername(String email)
             throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email)
+        return userRepository.findByEmail(email)
             .orElseThrow(() ->
                 new UsernameNotFoundException(
                     "User not found: " + email));
-
-        return org.springframework.security.core.userdetails
-            .User.builder()
-            .username(user.getEmail())
-            .password(user.getPassword())
-            .roles(user.getRole().name())
-            .build();
     }
 }
