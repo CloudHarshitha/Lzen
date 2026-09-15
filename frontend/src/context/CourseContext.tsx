@@ -14,6 +14,7 @@ export interface CourseResource {
   content?: string; // For rich text / markdown notes
   year?: number;
   questionType?: 'MCQ' | 'Numerical' | 'Subjective';
+  fileUrl?: string; // For mock PDF/Image viewing
 }
 
 export interface SyllabusTopic {

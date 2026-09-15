@@ -29,8 +29,11 @@ export const CourseDetail: React.FC = () => {
     year: new Date().getFullYear(),
     unitNum: 1,
     difficulty: 'Medium' as 'Easy' | 'Medium' | 'Hard',
-    questionType: 'MCQ' as 'MCQ' | 'Numerical' | 'Subjective'
+    questionType: 'MCQ' as 'MCQ' | 'Numerical' | 'Subjective',
+    fileUrl: ''
   });
+  
+  const [viewingFileUrl, setViewingFileUrl] = useState<string | null>(null);
   
   const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
 
@@ -139,12 +142,13 @@ export const CourseDetail: React.FC = () => {
       year: newPyqData.year,
       difficulty: newPyqData.difficulty,
       questionType: newPyqData.questionType,
+      fileUrl: newPyqData.fileUrl,
       dateAdded: new Date().toLocaleDateString(),
       isPinned: false
     };
     updateCourse(course.id, { resources: [...(course.resources || []), newResource] });
     setShowPyqModal(false);
-    setNewPyqData({ ...newPyqData, name: '' });
+    setNewPyqData({ ...newPyqData, name: '', fileUrl: '' });
   };
   
   const handleJumpToPyq = (unitNum: number) => {
@@ -624,7 +628,10 @@ export const CourseDetail: React.FC = () => {
                   {finalPyqs.map(res => {
                     const diffColor = res.difficulty === 'Easy' ? 'var(--color-success)' : res.difficulty === 'Medium' ? 'var(--color-warning)' : 'var(--color-error)';
                     return (
-                      <div key={res.id} onClick={() => setLastOpened(res.id)} style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', padding: 'var(--space-3)', background: 'var(--bg-surface-elevated)', borderRadius: 'var(--radius-sm)', cursor: 'pointer', borderLeft: `3px solid ${diffColor}` }}>
+                      <div key={res.id} onClick={() => {
+                        setLastOpened(res.id);
+                        if (res.fileUrl) setViewingFileUrl(res.fileUrl);
+                      }} style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', padding: 'var(--space-3)', background: 'var(--bg-surface-elevated)', borderRadius: 'var(--radius-sm)', cursor: 'pointer', borderLeft: `3px solid ${diffColor}` }}>
                         <button className={`pin-btn ${res.isPinned ? 'pinned' : ''}`} onClick={(e) => { e.stopPropagation(); togglePin(res.id); }} title="Pin to board">📌</button>
                         <div style={{ flex: 1 }}>
                           <div style={{ fontSize: 'var(--font-size-sm)' }}>{res.name}</div>
@@ -687,8 +694,14 @@ export const CourseDetail: React.FC = () => {
                   </div>
                   
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '4px' }}>Upload Image/PDF (Mocked)</label>
-                    <input type="file" className="input-field" style={{ width: '100%' }} />
+                    <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '4px' }}>Upload Image/PDF</label>
+                    <input type="file" className="input-field" style={{ width: '100%' }} onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        const url = URL.createObjectURL(file);
+                        setNewPyqData({...newPyqData, fileUrl: url});
+                      }
+                    }} />
                   </div>
                   
                   <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--space-2)', marginTop: 'var(--space-2)' }}>
@@ -704,6 +717,22 @@ export const CourseDetail: React.FC = () => {
           </div>
         );
       })()}
+      
+      {/* File Viewer Modal */}
+      {viewingFileUrl && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+          <div style={{ width: '90%', height: '90%', position: 'relative' }}>
+            <button 
+              style={{ position: 'absolute', top: '-40px', right: 0, background: 'none', border: 'none', color: 'white', fontSize: '24px', cursor: 'pointer' }}
+              onClick={() => setViewingFileUrl(null)}
+            >
+              ✕ Close
+            </button>
+            <iframe src={viewingFileUrl} style={{ width: '100%', height: '100%', border: 'none', background: 'white', borderRadius: 'var(--radius-lg)' }} />
+          </div>
+        </div>
+      )}
+      
     </div>
   );
 };
